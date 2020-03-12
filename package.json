@@ -1,0 +1,23 @@
+{
+  "name": "cmsandshopping",
+  "version": "1.0.0",
+  "description": "this is a nodejs project\r Technology used\r -----------------\r node.js\r mongoDB\r mongoose\r ejs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaypalweb/cmsandshopping.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jaypalweb/cmsandshopping/issues"
+  },
+  "homepage": "https://github.com/jaypalweb/cmsandshopping#readme",
+  "dependencies": {
+    "ejs": "^3.0.1",
+    "express": "^4.17.1"
+  }
+}
