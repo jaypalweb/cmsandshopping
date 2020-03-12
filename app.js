@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //routes
 app.get('/', function (req, res) {
-    res.send('Working');
+    res.render('index', { title: 'Home' });
 });
 
 //start the server
