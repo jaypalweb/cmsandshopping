@@ -2,6 +2,9 @@ var express = require('express');
 var path = require('path');
 var mongoose = require('mongoose');
 var config = require('./config/database');
+var bodyParser = require('body-parser');
+var session = require('express-session');
+var { check, validationResult } = require('express-validator');
 
 //Connect to DB
 mongoose.connect(config.database, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -20,6 +23,28 @@ app.set('view engine', 'ejs');
 
 //set the public folder
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+//Body parser middleware
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+// parse application/json
+app.use(bodyParser.json());
+
+//Express session middleware
+app.use(session({
+    secret: 'secret@123',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true }
+}));
+
+//Express messages middleware
+app.use(require('connect-flash')());
+app.use(function (req, res, next) {
+    res.locals.messages = require('express-messages')(req, res);
+    next();
+});
 
 // Set routes
 var pages = require('./routes/pages');
