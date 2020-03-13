@@ -2,6 +2,9 @@ var express = require('express');
 var router = express.Router();
 const { check, validationResult } = require('express-validator');
 
+//Get page model
+var Page = require('../models/page');
+
 /**
  * GET pages index
  */
@@ -34,10 +37,6 @@ router.post('/add-page', [
     check('content').not().isEmpty().withMessage('Content must have a value.')
 ],
     function (req, res) {
-        //req.check('title', 'Title must have a value.').notEmpty();
-        //req.check('content', 'Content must have a value.').notEmpty();
-
-
 
         var title = req.body.title;
         var slug = req.body.slug.replace(/\s+/g, '-').toLowerCase();
@@ -56,7 +55,32 @@ router.post('/add-page', [
                 content: content
             });
         } else {
-            console.log('success');
+            Page.findOne({ slug: slug }, function (err, page) {
+                if (page) {
+                    req.flash('danger', 'Page slug exists, choose another.');
+                    res.render('admin/add_page', {
+                        title: title,
+                        slug: slug,
+                        content: content
+                    });
+                } else {
+                    var page = new Page({
+                        title: title,
+                        slug: slug,
+                        content: content,
+                        sorting: 0
+                    });
+
+                    page.save(function (err) {
+                        if (err)
+                            return console.log(err);
+
+
+                        req.flash('success', 'Page added!');
+                        res.redirect('/admin/pages');
+                    });
+                }
+            });
         }
 
     });
