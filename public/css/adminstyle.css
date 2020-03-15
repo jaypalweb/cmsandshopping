@@ -1,0 +1,4 @@
+.sorting tr:not(.home){
+    cursor: pointer;
+    border: 1px dashed #ccc;
+}
