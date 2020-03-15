@@ -114,5 +114,25 @@ router.post('/reorder-pages', function (req, res) {
 
 });
 
+/**
+ * GET edit page
+ */
+router.get('/edit-page/:slug', function (req, res) {
+    console.log('--inside edit--');
+    Page.findOne({ slug: req.params.slug }, function (err, page) {
+        if (err)
+            return console.log(err);
+
+        //console.log(page);
+        res.render('admin/edit_page', {
+            title: page.title,
+            slug: page.slug,
+            content: page.content,
+            id: page._id
+        });
+    });
+
+
+});
 // Exports
 module.exports = router;
