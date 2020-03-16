@@ -37,9 +37,9 @@ app.use(bodyParser.json());
 //Express session middleware
 app.use(session({
     secret: 'secret@123',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true }
+    resave: true,   //default false
+    saveUninitialized: true
+    //    cookie: { secure: true }
 }));
 
 //Express messages middleware
