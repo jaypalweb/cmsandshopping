@@ -9,10 +9,12 @@ var Category = require('../models/category');
  * GET pages index
  */
 router.get('/', function (req, res) {
-    res.send('cat index');
-    // Page.find({}).sort({ sorting: 1 }).exec(function (err, pages) {
-    //     res.render('admin/pages', { pages: pages });
-    // });
+    Category.find(function (err, categories) {
+        if (err)
+            return console.log(err);
+
+        res.render('admin/categories', { categories: categories });
+    });
 });
 
 /**
