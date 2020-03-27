@@ -5,6 +5,8 @@ var config = require('./config/database');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var { check, validationResult } = require('express-validator');
+var fileUpload = require('express-fileupload');
+
 
 //Connect to DB
 mongoose.connect(config.database, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -27,6 +29,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 //Set global variables
 app.locals.errors = null;
 
+//express file upload middleware
+app.use(fileUpload());
 
 //Body parser middleware
 // parse application/x-www-form-urlencoded
@@ -53,9 +57,11 @@ app.use(function (req, res, next) {
 var pages = require('./routes/pages');
 var adminPages = require('./routes/admin_pages');
 var adminCategories = require('./routes/admin_categories');
+var adminProducts = require('./routes/admin_products');
 
 app.use('/admin/pages', adminPages);
 app.use('/admin/categories', adminCategories);
+app.use('/admin/products', adminProducts);
 app.use('/', pages);
 
 //start the server
