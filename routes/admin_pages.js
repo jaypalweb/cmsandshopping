@@ -117,8 +117,8 @@ router.post('/reorder-pages', function (req, res) {
 /**
  * GET edit page
  */
-router.get('/edit-page/:slug', function (req, res) {
-    Page.findOne({ slug: req.params.slug }, function (err, page) {
+router.get('/edit-page/:id', function (req, res) {
+    Page.findById(req.params.id, function (err, page) {
         if (err)
             return console.log(err);
 
@@ -136,7 +136,7 @@ router.get('/edit-page/:slug', function (req, res) {
 /**
  * POST edit page
  */
-router.post('/edit-page/:slug', [
+router.post('/edit-page/:id', [
     // username must be an email
     check('title').not().isEmpty().withMessage('Title must have a value.'),
     // password must be at least 5 chars long
@@ -149,7 +149,7 @@ router.post('/edit-page/:slug', [
         if (slug == "")
             slug = title.replace(/\s+/g, '-').toLowerCase();
         var content = req.body.content;
-        var id = req.body.id;
+        var id = req.params.id;
 
         // Finds the validation errors in this request and wraps them in an object with handy functions
         const errors = validationResult(req);
@@ -187,7 +187,7 @@ router.post('/edit-page/:slug', [
 
 
                             req.flash('success', 'Page updated!');
-                            res.redirect('/admin/pages/edit-page/' + page.slug);
+                            res.redirect('/admin/pages/edit-page/' + id);
                         });
                     });
 
