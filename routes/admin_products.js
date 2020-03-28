@@ -30,18 +30,20 @@ router.get('/', function (req, res) {
 });
 
 /**
- * GET add page
+ * GET add product
  */
-router.get('/add-page', function (req, res) {
+router.get('/add-product', function (req, res) {
     var title = '';
-    var slug = '';
-    var content = '';
-    res.render('admin/add_page', {
-        title: title,
-        slug: slug,
-        content: content
+    var desc = '';
+    var price = '';
+    Category.find(function (err, categories) {
+        res.render('admin/add_product', {
+            title: title,
+            desc: desc,
+            categories: categories,
+            price: price
+        });
     });
-
 });
 
 /**
