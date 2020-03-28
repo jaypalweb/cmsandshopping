@@ -6,15 +6,27 @@ var fs = require('fs-extra');
 var resizeImg = require('resize-img');
 
 //Get product model
-var Product = require('../models/page');
+var Product = require('../models/product');
+
+//Get category model
+var Category = require('../models/category');
 
 /**
  * GET pages index
  */
 router.get('/', function (req, res) {
-    Page.find({}).sort({ sorting: 1 }).exec(function (err, pages) {
-        res.render('admin/pages', { pages: pages });
+    var count;
+    Product.count(function (err, c) {
+        count = c;
     });
+
+    Product.find(function (err, products) {
+        res.render('admin/products', {
+            products: products,
+            count: count
+        });
+    });
+
 });
 
 /**
