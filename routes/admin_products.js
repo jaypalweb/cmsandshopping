@@ -1,4 +1,5 @@
 var express = require('express');
+var path = require('path');
 var router = express.Router();
 const { check, validationResult } = require('express-validator');
 var mkdirp = require('mkdirp');
@@ -16,7 +17,7 @@ var Category = require('../models/category');
  */
 router.get('/', function (req, res) {
     var count;
-    Product.count(function (err, c) {
+    Product.countDocuments(function (err, c) {
         count = c;
     });
 
@@ -47,56 +48,121 @@ router.get('/add-product', function (req, res) {
 });
 
 /**
- * POST add page
+ * POST add product
  */
-router.post('/add-page', [
+router.post('/add-product', [
     // username must be an email
     check('title').not().isEmpty().withMessage('Title must have a value.'),
     // password must be at least 5 chars long
-    check('content').not().isEmpty().withMessage('Content must have a value.')
+    check('desc').not().isEmpty().withMessage('Description must have a value.'),
+    check('price').isDecimal().withMessage('Price must have a value.')
 ],
     function (req, res) {
 
-        var title = req.body.title;
-        var slug = req.body.slug.replace(/\s+/g, '-').toLowerCase();
-        if (slug == "")
-            slug = title.replace(/\s+/g, '-').toLowerCase();
-        var content = req.body.content;
+        console.log(req.files.image);
+        // process.exit();
 
+        var title = req.body.title;
+        var slug = title.replace(/\s+/g, '-').toLowerCase();
+        var desc = req.body.desc;
+        var price = req.body.price;
+        var category = req.body.category;
+        console.log('category', category);
         // Finds the validation errors in this request and wraps them in an object with handy functions
         const errors = validationResult(req);
-        //console.log('errors', errors.array());
+        //console.log('errors', errors);
+
+        //check upload file if image
+        //console.log(req.files);
+        //process.exit();
+        var imageFile = "";
+
+        //var imageFile = typeof req.files.image !== "undefined" ? req.files.image.name : "";
+        if (req.files != null && typeof req.files.image !== "undefined") {
+            imageFile = req.files.image.name;
+            var extension = (path.extname(imageFile)).toLowerCase();
+            //console.log('extension', extension);
+            switch (extension) {
+                case '.jpg':
+                case '.jpeg':
+                case '.png':
+                case '':
+                    'ok';
+                    break;
+                default:
+                    errors.errors.push({
+                        value: '',
+                        msg: 'You must upload an Image',
+                        param: 'image',
+                        location: 'body'
+                    });
+            }
+        }
+
         if (!errors.isEmpty()) {
-            res.render('admin/add_page', {
-                errors: errors.array(),
-                title: title,
-                slug: slug,
-                content: content
+            // console.log(errors);
+            // process.exit();
+            Category.find(function (err, categories) {
+                res.render('admin/add_product', {
+                    errors: errors.array(),
+                    title: title,
+                    desc: desc,
+                    categories: categories,
+                    price: price
+                });
             });
+
         } else {
-            Page.findOne({ slug: slug }, function (err, page) {
-                if (page) {
-                    req.flash('danger', 'Page slug exists, choose another.');
-                    res.render('admin/add_page', {
-                        title: title,
-                        slug: slug,
-                        content: content
+            Product.findOne({ slug: slug }, function (err, product) {
+                if (product) {
+                    req.flash('danger', 'Product title exists, choose another.');
+                    Category.find(function (err, categories) {
+                        res.render('admin/add_product', {
+                            title: title,
+                            desc: desc,
+                            categories: categories,
+                            price: price
+                        });
                     });
                 } else {
-                    var page = new Page({
+                    var priceNum = parseFloat(price).toFixed(2);
+
+                    var product = new Product({
                         title: title,
                         slug: slug,
-                        content: content,
-                        sorting: 100
+                        desc: desc,
+                        price: priceNum,
+                        category: category,
+                        image: imageFile
                     });
 
-                    page.save(function (err) {
+                    product.save(function (err) {
                         if (err)
                             return console.log(err);
 
+                        // console.log('p-id', product._id);
+                        // process.exit();
+                        mkdirp('public/product_images/' + product._id).then((made) => {
 
-                        req.flash('success', 'Page added!');
-                        res.redirect('/admin/pages');
+                            if (imageFile != "") {
+                                var productImage = req.files.image;
+                                var path = 'public/product_images/' + product._id + '/' + imageFile;
+
+                                productImage.mv(path, function (err) {
+                                    return console.log(err);
+                                });
+                            }
+                        });
+                        mkdirp('public/product_images/' + product._id + '/gallery').then(function (made) {
+                            //return console.log(made);
+                        });
+                        mkdirp('public/product_images/' + product._id + '/gallery/thumbs').then(function (made) {
+                            //return console.log(made);
+                        });
+
+
+                        req.flash('success', 'Product added!');
+                        res.redirect('/admin/products');
                     });
                 }
             });
