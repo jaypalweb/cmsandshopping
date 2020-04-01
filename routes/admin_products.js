@@ -170,47 +170,43 @@ router.post('/add-product', [
 
     });
 
-
-/*
- * POST reorder pages
- */
-router.post('/reorder-pages', function (req, res) {
-    var ids = req.body['id[]'];
-    var count = 0;
-    for (var i = 0; i < ids.length; i++) {
-        var id = ids[i];
-        count++;
-
-        //the function closure is need as Db functions are async, so if not user
-        //count value will be last value for all
-        (function (count) {
-
-            Page.findById(id, function (err, page) {
-                page.sorting = count;
-                page.save(function (err) {
-                    if (err)
-                        return console.log(err);
-                })
-            });
-        })(count);
-    }
-
-});
-
 /**
- * GET edit page
+ * GET edit product
  */
-router.get('/edit-page/:id', function (req, res) {
-    Page.findById(req.params.id, function (err, page) {
-        if (err)
-            return console.log(err);
+router.get('/edit-product/:id', function (req, res) {
+    var errors;
+    if (req.session.errors) errors = req.session.errors;
+    req.session.errors = null;
 
-        //console.log(page);
-        res.render('admin/edit_page', {
-            title: page.title,
-            slug: page.slug,
-            content: page.content,
-            id: page._id
+    Category.find(function (err, categories) {
+        Product.findById(req.params.id, function (err, product) {
+            if (err) {
+                console.log(err);
+                res.redirect('admin/products');
+            } else {
+                var galleryDir = 'public/product_images/' + product._id + '/gallery';
+                var galleryImages = null;
+
+                fs.readdir(galleryDir, function (err, files) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        galleryImages = files;
+
+                        //console.log(page);
+                        res.render('admin/edit_product', {
+                            title: product.title,
+                            errors: errors,
+                            desc: product.desc,
+                            categories: categories,
+                            category: product.category.replace(/\s+/g, '-').toLowerCase(),
+                            price: product.price,
+                            image: product.image,
+                            galleryImages: galleryImages
+                        });
+                    }
+                });
+            }
         });
     });
 });
