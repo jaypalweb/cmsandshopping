@@ -200,9 +200,10 @@ router.get('/edit-product/:id', function (req, res) {
                             desc: product.desc,
                             categories: categories,
                             category: product.category.replace(/\s+/g, '-').toLowerCase(),
-                            price: product.price,
+                            price: parseFloat(product.price).toFixed(2),
                             image: product.image,
-                            galleryImages: galleryImages
+                            galleryImages: galleryImages,
+                            id: product._id
                         });
                     }
                 });
