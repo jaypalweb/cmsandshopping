@@ -11,3 +11,16 @@
     width: 100px;
     height: 100px;
 }
+
+ul.gallery{
+    padding: 0px;
+}
+
+ul.gallery li:first-child{
+    margin-left: 0px;
+}
+ul.gallery li{
+    margin: 20px;
+    display: inline-block;
+    list-style: none;
+}
