@@ -41,6 +41,17 @@ Page.find({}).sort({ sorting: 1 }).exec(function (err, pages) {
     }
 });
 
+// Get Category Model
+var Category = require('./models/category');
+
+// Get all pages to pass to header.ejs
+Category.find(function (err, categories) {
+    if (err) {
+        return console.log(err);
+    } else {
+        app.locals.categories = categories;
+    }
+});
 //express file upload middleware
 app.use(fileUpload());
 
