@@ -1,0 +1,12 @@
+.pimage{
+    width: 150px;
+}
+.pa{
+    display: inline-block;
+    height: 160px;
+}
+
+.row.products .p{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
