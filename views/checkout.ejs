@@ -33,18 +33,17 @@
         <td colspan="6" align="right"><b>Total:</b> $<%= parseFloat(total).toFixed(2) %></td>
     </tr>
     <tr>
-        <td colspan="5" align="right">
+        <td colspan="4" align="right">
             <a class="clearcart btn btn-danger" href="/cart/clear">Clear Cart</a>
         </td>
 
-        <td>
+        <td colspan="2" align="right">
             <a class="btn btn-primary buynow" href="#">Buy now</a>
         </td>
     </tr>
 </table>
 
-<input class="pp" type="hidden" name="cmd" value="_ext-enter">
-<form action="https://www.sandbox.paypal.com/us/cgi-bin/webscr" method="post">
+<form class="pp" action="https://www.sandbox.paypal.com/us/cgi-bin/webscr" method="post">
     <input type="hidden" name="cmd" value="_cart">
     <input type="hidden" name="upload" value="1">
     <input type="hidden" name="business" value="jaylimtexseller@gmail.com">
@@ -69,7 +68,16 @@
         $('a.clearcart').on('click', function () {
             if (!confirm('Confirm clear cart'))
                 return false;
-        })
+        });
+
+        $('a.buynow').on('click', function (e) {
+            e.preventDefault();
+
+            $.get('/cart/buynow', function () {
+                $('form.pp input[type=image]').click();
+                $('.ajaxbg').show();
+            });
+        });
     });
 
 </script>
