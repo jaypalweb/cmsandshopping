@@ -85,6 +85,7 @@ app.use(passport.session());
 
 app.get('*', function (req, res, next) {
     res.locals.cart = req.session.cart;
+    res.locals.user = req.user || null;
     next();
 });
 
@@ -92,6 +93,7 @@ app.get('*', function (req, res, next) {
 var pages = require('./routes/pages');
 var products = require('./routes/products');
 var cart = require('./routes/cart');
+var user = require('./routes/users');
 var adminPages = require('./routes/admin_pages');
 var adminCategories = require('./routes/admin_categories');
 var adminProducts = require('./routes/admin_products');
@@ -101,6 +103,7 @@ app.use('/admin/categories', adminCategories);
 app.use('/admin/products', adminProducts);
 app.use('/products', products);
 app.use('/cart', cart);
+app.use('/user', user);
 app.use('/', pages);
 
 //start the server
