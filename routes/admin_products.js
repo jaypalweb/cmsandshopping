@@ -51,9 +51,7 @@ router.get('/add-product', function (req, res) {
  * POST add product
  */
 router.post('/add-product', [
-    // username must be an email
     check('title').not().isEmpty().withMessage('Title must have a value.'),
-    // password must be at least 5 chars long
     check('desc').not().isEmpty().withMessage('Description must have a value.'),
     check('price').isDecimal().withMessage('Price must have a value.')
 ],
@@ -217,9 +215,7 @@ router.get('/edit-product/:id', function (req, res) {
  * POST edit product
  */
 router.post('/edit-product/:id', [
-    // username must be an email
     check('title').not().isEmpty().withMessage('Title must have a value.'),
-    // password must be at least 5 chars long
     check('desc').not().isEmpty().withMessage('Description must have a value.'),
     check('price').isDecimal().withMessage('Price must have a value.')
 ],
