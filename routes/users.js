@@ -55,7 +55,7 @@ router.post('/register', [
 
             if (user) {
                 req.flash('danger', 'Username exists, choose another!');
-                res.redirect('/users/register');
+                res.redirect('/user/register');
             } else {
                 var user = new User({
                     name: name,
@@ -77,7 +77,7 @@ router.post('/register', [
                                 console.log(err);
                             } else {
                                 req.flash('success', 'You are now registered!');
-                                res.redirect('/users/login')
+                                res.redirect('/user/login')
                             }
                         });
                     });
@@ -87,6 +87,32 @@ router.post('/register', [
     }
 });
 
+/**
+ * GET login
+ */
+router.get('/login', function (req, res) {
+    //if already login redirect to home
+    if (res.locals.user) {
+        res.redirect('/');
+    } else {
+        res.render('login',
+            {
+                title: 'Login'
+            }
+        );
+    }
+});
+
+/**
+ * POST login
+ */
+router.post('/login', function (req, res, next) {
+    passport.authenticate('local', {
+        successRedirect: '/',
+        failureRedirect: '/user/login',
+        failureFlash: true
+    })(req, res, next);
+});
 
 // Exports
 module.exports = router;

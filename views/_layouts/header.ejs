@@ -53,12 +53,24 @@
                         <% } %>
                         )</a>
                 </li>
+                <% if(user){ %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/logout">Hi, <%= user.username %> ( logout )</a>
+                </li>
+                <% } else { %>
                 <li class="nav-item">
                     <a class="nav-link" href="/user/register">Register</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/user/login">Login</a>
                 </li>
+                <% } %>
+                <% if(user && user.admin == 1){ %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/pages">Admin Area</a>
+                </li>
+                <% } %>
+
             </ul>
 
         </div>
